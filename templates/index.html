@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fish Species Prediction</title>
+</head>
+<body>
+    <h1>Fish Species Prediction</h1>
+    <form id="fishForm">
+        <label for="Weight">Weight:</label>
+        <input type="text" id="Weight" name="Weight"><br>
+
+        <label for="Length1">Length1:</label>
+        <input type="text" id="Length1" name="Length1"><br>
+
+        <label for="Length2">Length2:</label>
+        <input type="text" id="Length2" name="Length2"><br>
+
+        <label for="Length3">Length3:</label>
+        <input type="text" id="Length3" name="Length3"><br>
+
+        <label for="Height">Height:</label>
+        <input type="text" id="Height" name="Height"><br>
+
+        <label for="Width">Width:</label>
+        <input type="text" id="Width" name="Width"><br>
+
+        <button type="button" onclick="predictSpecies()">Predict</button>
+    </form>
+
+    <h2 id="predictionText"></h2>
+
+    <script>
+        function predictSpecies() {
+            const weight = parseFloat(document.getElementById("Weight").value);
+            const length1 = parseFloat(document.getElementById("Length1").value);
+            const length2 = parseFloat(document.getElementById("Length2").value);
+            const length3 = parseFloat(document.getElementById("Length3").value);
+            const height = parseFloat(document.getElementById("Height").value);
+            const width = parseFloat(document.getElementById("Width").value);
+
+            // Validate input
+            if (isNaN(weight) || isNaN(length1) || isNaN(length2) || isNaN(length3) || isNaN(height) || isNaN(width)) {
+                alert("Please enter valid numeric values for all parameters.");
+                return;
+            }
+
+            // Create a JSON object with the input data
+            const inputData = {
+                "Weight": weight,
+                "Length1": length1,
+                "Length2": length2,
+                "Length3": length3,
+                "Height": height,
+                "Width": width
+            };
+
+            // Send a POST request to the Flask server
+            fetch("/predict", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(inputData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("predictionText").textContent = "Predicted Species: " + data.species;
+            })
+            .catch(error => console.error("Error:", error));
+        }
+    </script>
+</body>
+</html>
